@@ -297,7 +297,27 @@
     outline: none;
     transition: border-color 0.2s;
   }
-  .field input:focus { border-color: var(--accent); }
+  .field input:focus, .field select:focus { border-color: var(--accent); }
+
+  .phone-input-group {
+    display: flex;
+    gap: 8px;
+  }
+  .phone-input-group select {
+    width: 110px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 11px 8px;
+    font-size: 13px;
+    color: var(--text);
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  .phone-input-group input {
+    flex: 1;
+  }
   .field input.error { border-color: var(--danger); }
   .field input::placeholder { color: #4a4a60; }
   .err-msg { font-size: 12px; color: var(--danger); margin-top: 4px; display: none; }
@@ -668,7 +688,25 @@
           </div>
           <div class="field">
             <label data-fr="Numéro WhatsApp" data-en="WhatsApp number">Numéro WhatsApp</label>
-            <input type="tel" id="f-wa" data-fr-placeholder="+225 07 00 00 00 00" data-en-placeholder="+225 07 00 00 00 00" placeholder="+225 07 00 00 00 00" />
+            <div class="phone-input-group">
+              <select id="f-wa-country">
+                <option value="+225" selected>🇨🇮 +225</option>
+                <option value="+221">🇸🇳 +221</option>
+                <option value="+226">🇧🇫 +226</option>
+                <option value="+223">🇲🇱 +223</option>
+                <option value="+224">🇬🇳 +224</option>
+                <option value="+227">🇳🇪 +227</option>
+                <option value="+228">🇹🇬 +228</option>
+                <option value="+229">🇧🇯 +229</option>
+                <option value="+237">🇨🇲 +237</option>
+                <option value="+241">🇬🇦 +241</option>
+                <option value="+242">🇨🇬 +242</option>
+                <option value="+243">🇨🇩 +243</option>
+                <option value="+33">🇫🇷 +33</option>
+                <option value="">🌍 Autre</option>
+              </select>
+              <input type="tel" id="f-wa" data-fr-placeholder="07 00 00 00 00" data-en-placeholder="07 00 00 00 00" placeholder="07 00 00 00 00" />
+            </div>
             <div class="err-msg" id="err-wa" data-fr="Veuillez entrer votre numéro WhatsApp." data-en="Please enter your WhatsApp number.">Veuillez entrer votre numéro WhatsApp.</div>
           </div>
 
@@ -977,7 +1015,11 @@ async function submitForm() {
   const apps = [...document.querySelectorAll('#app-chips .chip.selected span')].map(s => s.textContent.trim());
   const name = document.getElementById('f-name').value.trim();
   const email = document.getElementById('f-email').value.trim();
-  const wa = document.getElementById('f-wa').value.trim();
+  const waRaw = document.getElementById('f-wa').value.trim();
+  const waCountry = document.getElementById('f-wa-country').value;
+  // Nettoyage : on garde seulement les chiffres
+  const waClean = waRaw.replace(/\D/g, '');
+  const wa = (waCountry || '+') + waClean;
 
   const btn = document.getElementById('btn-submit');
   btn.classList.add('loading');
